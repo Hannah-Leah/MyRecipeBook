@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -18,6 +19,8 @@ class RecipeDetails : AppCompatActivity() {
 
     private lateinit var db: MyDatabase
     private var recipeID: Int = -1
+
+    private var isFavorite = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +41,10 @@ class RecipeDetails : AppCompatActivity() {
         val textviewIngredients = findViewById<TextView>(R.id.textviewIngredients)
         val textviewCookingTime = findViewById<TextView>(R.id.textviewCookingTime)
         val textviewDescription = findViewById<TextView>(R.id.textviewDescription)
+        val favoriteButton = findViewById<ImageButton>(R.id.buttonFavorite)
+
+        isFavorite = intent.getBooleanExtra("RecipeFavorite", false)
+        updateFavoriteIcon(favoriteButton)
 
         val editButton = findViewById<Button>(R.id.editButton)
         val returnButton = findViewById<Button>(R.id.returnButton)
@@ -49,6 +56,12 @@ class RecipeDetails : AppCompatActivity() {
         textviewIngredients.text = intent.getStringExtra("RecipeIngredients")
         textviewCategory.text = intent.getStringExtra("RecipeCategory")
         textviewDescription.text = intent.getStringExtra("RecipeDescription")
+
+        favoriteButton.setOnClickListener {
+            isFavorite = !isFavorite
+            db.updateFavorite(recipeID, isFavorite)
+            updateFavoriteIcon(favoriteButton)
+        }
 
         editButton.setOnClickListener {
             val editIntent = Intent(this, AddEditRecipe::class.java)
@@ -96,5 +109,14 @@ class RecipeDetails : AppCompatActivity() {
             setResult(RESULT_OK, data)
             finish()
         }
+    }
+
+    private fun updateFavoriteIcon(button: ImageButton) {
+        button.setImageResource(
+            if (isFavorite)
+                android.R.drawable.btn_star_big_on
+            else
+                android.R.drawable.btn_star_big_off
+        )
     }
 }

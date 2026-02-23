@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ListView
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -19,6 +20,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recipeList: ListView
     private lateinit var addButton: FloatingActionButton
     private lateinit var favoritesButton: FloatingActionButton
+    private lateinit var appTitle : TextView
+
+    private var showingFavorites = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,11 +36,25 @@ class MainActivity : AppCompatActivity() {
         recipeList = findViewById(R.id.recipeList)
         addButton = findViewById(R.id.addButton)
         favoritesButton = findViewById(R.id.favoritesButton)
+        appTitle = findViewById(R.id.appTitle)
 
         db = MyDatabase(this)
         db.createDefaults()
 
         loadData()
+
+        favoritesButton.setOnClickListener {
+            showingFavorites = !showingFavorites
+            loadData()
+
+        }
+
+        favoritesButton.setImageResource(
+            if (showingFavorites)
+                android.R.drawable.btn_star_big_on
+            else
+                android.R.drawable.btn_star_big_off
+        )
 
         addButton.setOnClickListener {
             val myIntent = Intent(this, AddEditRecipe::class.java)
@@ -88,12 +106,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadData() {
-        val recipes = db.getAll()
+        val recipes = if (showingFavorites) {
+            appTitle.setText("Favorite Recipes")
+            db.getFavorites()
+
+        } else {
+            appTitle.setText("My Recipes")
+            db.getAll()
+        }
+
         val adapter = RowAdapter(this, recipes)
         recipeList.adapter = adapter
 
         recipeList.setOnItemClickListener { _, _, position, _ ->
-
             val selectedRecipe = recipes[position]
 
             val intent = Intent(this, RecipeDetails::class.java)
@@ -104,9 +129,7 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("RecipeCategory", selectedRecipe.RecipeCategory)
             intent.putExtra("RecipeDescription", selectedRecipe.RecipeDescription)
             intent.putExtra("RecipeImage", selectedRecipe.RecipeImage)
-            intent.putExtra("FavoriteRecipe", selectedRecipe.isFavorite)
-
-
+            intent.putExtra("RecipeFavorite", selectedRecipe.isFavorite)
 
             startActivity(intent)
         }

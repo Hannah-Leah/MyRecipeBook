@@ -144,4 +144,42 @@ class MyDatabase (context: Context?) :
             arrayOf(recipe.RecipeID.toString())
         )
     }
+
+    // this is for the favorites
+    fun updateFavorite(recipeId: Int, isFavorite: Boolean) {
+        val values = ContentValues()
+        values.put(COLUMN_FAVORITE, if (isFavorite) 1 else 0)
+
+        writableDatabase.update(
+            TABLE_NAME,
+            values,
+            "$COLUMN_ID = ?",
+            arrayOf(recipeId.toString())
+        )
+    }
+
+    fun getFavorites(): List<MyRecipe> {
+        val list = mutableListOf<MyRecipe>()
+        val query = "SELECT * FROM $TABLE_NAME WHERE $COLUMN_FAVORITE = 1"
+        val cursor = readableDatabase.rawQuery(query, null)
+
+        if (cursor.moveToFirst()) {
+            do {
+                val recipe = MyRecipe()
+                recipe.RecipeID = cursor.getInt(0)
+                recipe.RecipeImage = cursor.getString(1)
+                recipe.RecipeTitle = cursor.getString(2)
+                recipe.RecipeIngredients = cursor.getString(3)
+                recipe.RecipeCookTime = cursor.getInt(4)
+                recipe.RecipeCategory = cursor.getString(5)
+                recipe.RecipeDescription = cursor.getString(6)
+                recipe.isFavorite = true
+
+                list.add(recipe)
+            } while (cursor.moveToNext())
+        }
+
+        cursor.close()
+        return list
+    }
 }
