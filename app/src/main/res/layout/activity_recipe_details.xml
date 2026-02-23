@@ -25,8 +25,8 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp"
         android:text="Ingredients:"
         app:layout_constraintBottom_toTopOf="@+id/textView5"
         app:layout_constraintEnd_toStartOf="@+id/textviewIngredients" />
@@ -34,7 +34,7 @@
     <TextView
         android:id="@+id/textviewIngredients"
         android:layout_width="217dp"
-        android:layout_height="24dp"
+        android:layout_height="0dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="72dp"
         android:text="TextView"

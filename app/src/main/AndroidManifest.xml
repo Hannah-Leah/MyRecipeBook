@@ -15,7 +15,7 @@
         android:theme="@style/Theme.MyRecipeBook">
         <activity
             android:name=".AddEditRecipe"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".RecipeDetails"
             android:exported="true" />

@@ -1,5 +1,22 @@
 package com.example.myrecipebook
 
+class MyRecipe(
+    var RecipeID: Int = 0,
+    var RecipeImage: String = "",
+    var RecipeTitle: String = "",
+    var RecipeIngredients: String = "",
+    var RecipeCookTime: Int = 0,
+    var RecipeCategory: String = "",
+    var RecipeDescription: String = "",
+    var isFavorite: Boolean = false
+) {
+    override fun toString(): String {
+        return RecipeTitle
+    }
+}
+
+/*
+
 class MyRecipe {
 var RecipeID : Int = 0
         get() = field
@@ -70,3 +87,5 @@ var RecipeID : Int = 0
         return RecipeTitle
     }
 }
+
+ */

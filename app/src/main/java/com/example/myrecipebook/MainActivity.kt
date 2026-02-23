@@ -79,17 +79,32 @@ class MainActivity : AppCompatActivity() {
             val category = data.getStringExtra("RecipeCategory") ?: return
             val description = data.getStringExtra("RecipeDescription") ?: ""
 
-            val recipe = MyRecipe(
-                // had to remove this cause it doesnt work with editing it wipes the original ID
-                // 0,
-                id,
-                image,
-                title,
-                ingredients,
-                cooktime,
-                category,
-                description
-            )
+            val recipe = if (editMode) {
+                val existing = db.getAll().first { it.RecipeID == id }
+
+                MyRecipe(
+                    id,
+                    image,
+                    title,
+                    ingredients,
+                    cooktime,
+                    category,
+                    description,
+                    existing.isFavorite
+                )
+            } else {
+                MyRecipe(
+                    0, // SQLite AUTOINCREMENT
+                    image,
+                    title,
+                    ingredients,
+                    cooktime,
+                    category,
+                    description,
+                    false
+                )
+
+            }
 
 
 
