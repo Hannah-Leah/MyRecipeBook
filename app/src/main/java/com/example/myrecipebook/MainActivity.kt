@@ -79,54 +79,115 @@ class MainActivity : AppCompatActivity() {
             val category = data.getStringExtra("RecipeCategory") ?: return
             val description = data.getStringExtra("RecipeDescription") ?: ""
 
-            val recipe = if (editMode) {
-                val existing = db.getAll().first { it.RecipeID == id }
+//            val recipe = if (editMode) {
+//                val existing = db.getAll().first { it.RecipeID == id }
+//
+//                MyRecipe(
+//                    id,
+//                    image,
+//                    title,
+//                    ingredients,
+//                    cooktime,
+//                    category,
+//                    description,
+//                    existing.isFavorite
+//                )
+//            } else {
+//                MyRecipe(
+//                    0, // SQLite AUTOINCREMENT
+//                    image,
+//                    title,
+//                    ingredients,
+//                    cooktime,
+//                    category,
+//                    description,
+//                    false
+//                )
+//
+//            }
+//
+//
+//
+//            // if shit is false add to the database otherwise call edit function
+//            if (editMode) {
+//                db.editDB(recipe)
+//            } else {
+//                db.addToDb(recipe)
+//            }
+//
+//        }
+//
+//        loadData()
+//    }
 
-                MyRecipe(
-                    id,
-                    image,
-                    title,
-                    ingredients,
-                    cooktime,
-                    category,
-                    description,
-                    existing.isFavorite
+            if (editMode && id > 0) {
+                val existingRecipe = db.getAll().firstOrNull { it.RecipeID == id }
+                db.editDB(
+                    MyRecipe(
+                        id,
+                        image,
+                        title,
+                        ingredients,
+                        cooktime,
+                        category,
+                        description,
+                        existingRecipe?.isFavorite ?: false
+                    )
                 )
             } else {
-                MyRecipe(
-                    0, // SQLite AUTOINCREMENT
-                    image,
-                    title,
-                    ingredients,
-                    cooktime,
-                    category,
-                    description,
-                    false
+                db.addToDb(
+                    MyRecipe(
+                        0,
+                        image,
+                        title,
+                        ingredients,
+                        cooktime,
+                        category,
+                        description,
+                        false
+                    )
                 )
-
             }
 
-
-
-            // if shit is false add to the database otherwise call edit function
-            if (editMode) {
-                db.editDB(recipe)
-            } else {
-                db.addToDb(recipe)
-            }
-
+            loadData()
         }
-
-        loadData()
     }
+
+//    private fun loadData() {
+//        val recipes = if (showingFavorites) {
+//            appTitle.setText("Favorite Recipes")
+//            db.getFavorites()
+//
+//        } else {
+//            appTitle.setText("My Recipes")
+//            db.getAll()
+//        }
+//
+//        val adapter = RowAdapter(this, recipes)
+//        recipeList.adapter = adapter
+//
+//        recipeList.setOnItemClickListener { _, _, position, _ ->
+//            val selectedRecipe = recipes[position]
+//
+//            val intent = Intent(this, AddEditRecipe::class.java)
+//            intent.putExtra("editMode", true)
+//            intent.putExtra("RecipeID", selectedRecipe.RecipeID)
+//            intent.putExtra("RecipeTitle", selectedRecipe.RecipeTitle)
+//            intent.putExtra("RecipeImage", selectedRecipe.RecipeImage)
+//            intent.putExtra("RecipeIngredients", selectedRecipe.RecipeIngredients)
+//            intent.putExtra("RecipeCookTime", selectedRecipe.RecipeCookTime)
+//            intent.putExtra("RecipeCategory", selectedRecipe.RecipeCategory)
+//            intent.putExtra("RecipeDescription", selectedRecipe.RecipeDescription)
+//            startActivityForResult(intent, 1)
+//        }
+//    }
 
     private fun loadData() {
         val recipes = if (showingFavorites) {
-            appTitle.setText("Favorite Recipes")
+            appTitle.text = "Favorite Recipes"
             db.getFavorites()
-
         } else {
-            appTitle.setText("My Recipes")
+            appTitle.text = "My Recipes"
             db.getAll()
         }
 
@@ -135,7 +196,6 @@ class MainActivity : AppCompatActivity() {
 
         recipeList.setOnItemClickListener { _, _, position, _ ->
             val selectedRecipe = recipes[position]
-
             val intent = Intent(this, RecipeDetails::class.java)
             intent.putExtra("RecipeID", selectedRecipe.RecipeID)
             intent.putExtra("RecipeTitle", selectedRecipe.RecipeTitle)
@@ -145,11 +205,18 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("RecipeDescription", selectedRecipe.RecipeDescription)
             intent.putExtra("RecipeImage", selectedRecipe.RecipeImage)
             intent.putExtra("RecipeFavorite", selectedRecipe.isFavorite)
+            startActivityForResult(intent, 1)
+        }
 
-            startActivity(intent)
+        //  for deleting
+        recipeList.setOnItemLongClickListener { _, _, position, _ ->
+            val selectedRecipe = recipes[position]
+            showDeleteDialog(selectedRecipe.RecipeID)
+            true
         }
     }
-    private fun showDeleteDialog() {
+
+    private fun showDeleteDialog(recipeId: Int) {
         AlertDialog.Builder(this)
             .setTitle("Delete Recipe")
             .setMessage("Are you sure you want to delete this Recipe?")
@@ -158,8 +225,7 @@ class MainActivity : AppCompatActivity() {
                 recipe.RecipeID = recipeId
                 db.deleteFromDb(recipe)
 
-                setResult(RESULT_OK)
-                finish()
+                loadData()
             }
             .setNegativeButton("Cancel", null)
             .show()

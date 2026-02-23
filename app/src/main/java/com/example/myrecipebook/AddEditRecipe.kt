@@ -62,16 +62,17 @@ class AddEditRecipe : AppCompatActivity() {
 
             val intent = Intent()
             intent.putExtra("editMode", editMode)
-            intent.putExtra("RecipeID", recipeID)
+            intent.putExtra("RecipeID", recipeID)  // this must be > 0 for edits
             intent.putExtra("RecipeImage", myImage.text.toString())
             intent.putExtra("RecipeTitle", myTitle.text.toString())
             intent.putExtra("RecipeIngredients", myIngredients.text.toString())
             intent.putExtra("RecipeCookTime", myCookingTime.text.toString().toInt())
             intent.putExtra("RecipeCategory", myCategory.text.toString())
             intent.putExtra("RecipeDescription", myDescripton.text.toString())
-
             setResult(RESULT_OK, intent)
             finish()
+
+
         }
 
         myCancelButton.setOnClickListener {
