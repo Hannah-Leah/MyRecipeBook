@@ -182,4 +182,46 @@ class MyDatabase (context: Context?) :
         cursor.close()
         return list
     }
+
+    // for searching
+
+    fun searchRecipes(query: String): List<MyRecipe> {
+        val recipes = mutableListOf<MyRecipe>()
+        val db = readableDatabase
+
+        val searchQuery = """
+        SELECT * FROM $TABLE_NAME
+        WHERE RecipeTitle LIKE ?
+           OR RecipeIngredients LIKE ?
+           OR RecipeCategory LIKE ?
+    """
+
+        val args = arrayOf(
+            "%$query%",
+            "%$query%",
+            "%$query%"
+        )
+
+        val cursor = db.rawQuery(searchQuery, args)
+
+        if (cursor.moveToFirst()) {
+            do {
+                recipes.add(
+                    MyRecipe(
+                        cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_IMAGE)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TITLE)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_INGREDIENTS)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_COOKTIME)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CATEGORY)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DESCRIPTION)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_FAVORITE)) == 1
+                    )
+                )
+            } while (cursor.moveToNext())
+        }
+
+        cursor.close()
+        return recipes
+    }
 }

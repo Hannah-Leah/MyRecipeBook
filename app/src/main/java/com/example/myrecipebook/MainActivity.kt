@@ -5,6 +5,8 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
 import android.widget.ListView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -16,11 +18,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 class MainActivity : AppCompatActivity() {
 
     private lateinit var db: MyDatabase
-    private var recipeId: Int = -1
     private lateinit var recipeList: ListView
     private lateinit var addButton: FloatingActionButton
     private lateinit var favoritesButton: FloatingActionButton
     private lateinit var appTitle : TextView
+
+    private lateinit var searchField: EditText
 
     private var showingFavorites = false
 
@@ -37,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         addButton = findViewById(R.id.addButton)
         favoritesButton = findViewById(R.id.favoritesButton)
         appTitle = findViewById(R.id.appTitle)
+        searchField = findViewById(R.id.searchField)
 
         db = MyDatabase(this)
         db.createDefaults()
@@ -59,6 +63,26 @@ class MainActivity : AppCompatActivity() {
         addButton.setOnClickListener {
             val myIntent = Intent(this, AddEditRecipe::class.java)
             startActivityForResult(myIntent, 1)
+        }
+
+        // search f
+
+        searchField.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+
+                val query = searchField.text.toString().trim()
+
+                val recipes = if (query.isEmpty()) {
+                    if (showingFavorites) db.getFavorites() else db.getAll()
+                } else {
+                    db.searchRecipes(query)
+                }
+
+                recipeList.adapter = RowAdapter(this, recipes)
+                true
+            } else {
+                false
+            }
         }
 
 
