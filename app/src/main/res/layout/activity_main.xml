@@ -11,42 +11,48 @@
         android:id="@+id/appTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/audiowide"
         android:text="MyRecipeBook"
+        android:textColor="?attr/colorTertiaryFixedDim"
+        android:textSize="20sp"
+        android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.437"
+        app:layout_constraintHorizontal_bias="0.152"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.022" />
+        app:layout_constraintVertical_bias="0.026" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="197dp"
-        android:layout_marginBottom="21dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:backgroundTint="?attr/colorTertiaryFixedDim"
         app:layout_constraintEnd_toStartOf="@+id/favoritesButton"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:drawable/ic_menu_add" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/favoritesButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="52dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:backgroundTint="?attr/colorTertiaryFixedDim"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:drawable/btn_star_big_on" />
 
     <EditText
         android:id="@+id/searchField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="9dp"
-        android:layout_marginEnd="116dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="176dp"
         android:ems="10"
         android:hint="Search..."
         android:imeOptions="actionSearch"
@@ -57,7 +63,7 @@
     <ListView
         android:id="@+id/recipeList"
         android:layout_width="409dp"
-        android:layout_height="563dp"
+        android:layout_height="700dp"
         android:layout_marginStart="1dp"
         android:layout_marginTop="1dp"
         app:layout_constraintStart_toStartOf="parent"

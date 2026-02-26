@@ -18,6 +18,8 @@ import com.bumptech.glide.Glide
 class RecipeDetails : AppCompatActivity() {
 
     private lateinit var db: MyDatabase
+
+    // -1 because Auto-increment IDs start at 1 but in programming the data starts with 0
     private var recipeID: Int = -1
 
     private var isFavorite = false
@@ -43,13 +45,15 @@ class RecipeDetails : AppCompatActivity() {
         val textviewDescription = findViewById<TextView>(R.id.textviewDescription)
         val favoriteButton = findViewById<ImageButton>(R.id.buttonFavorite)
 
+        // updates the favorite button image if its already favorited
+
         isFavorite = intent.getBooleanExtra("RecipeFavorite", false)
         updateFavoriteIcon(favoriteButton)
 
         val editButton = findViewById<Button>(R.id.editButton)
         val returnButton = findViewById<Button>(R.id.returnButton)
 
-        // replace the elements with the data of that recipe
+        // replace the elements with the data of the recipe that was clicked on
         recipeID = intent.getIntExtra("RecipeID", -1)
         textviewTitle.text = intent.getStringExtra("RecipeTitle")
         textviewCookingTime.text = intent.getIntExtra("RecipeCookTime", 0).toString() + " minutes"
@@ -57,11 +61,19 @@ class RecipeDetails : AppCompatActivity() {
         textviewCategory.text = intent.getStringExtra("RecipeCategory")
         textviewDescription.text = intent.getStringExtra("RecipeDescription")
 
+        // on click event for the favorite button.
+        // clicking the button will switch between false and true
+        // then, the recipe's ID and the favorite status will be passed on to the DB function
+        // it also passes the button to the updateFavoriteIcon function
+
         favoriteButton.setOnClickListener {
             isFavorite = !isFavorite
             db.updateFavorite(recipeID, isFavorite)
             updateFavoriteIcon(favoriteButton)
         }
+
+        // on click event for the edit button
+        // it passes the recipe's data to the edit page
 
         editButton.setOnClickListener {
             val editIntent = Intent(this, AddEditRecipe::class.java)
@@ -90,6 +102,9 @@ class RecipeDetails : AppCompatActivity() {
 
         val imageUrl = intent.getStringExtra("RecipeImage")
 
+        // i am using Glide to show the image paths as the image and not string
+        // it loads the imagrUrl into the image view
+
         Glide.with(this)
             .load(imageUrl)
             .into(imageviewRecipe)
@@ -110,6 +125,9 @@ class RecipeDetails : AppCompatActivity() {
             finish()
         }
     }
+
+    // changes the favorite icon depending if its favorited or not
+
 
     private fun updateFavoriteIcon(button: ImageButton) {
         button.setImageResource(

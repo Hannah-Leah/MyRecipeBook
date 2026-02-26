@@ -11,7 +11,7 @@ private val TAG:String = "OeBB"
 private val DATABASE_VERSION: Int = 1
 private val DATABASE_NAME:String = "RecipeDB"
 
-
+// our database table
 private val TABLE_NAME:String = "Recipes"
 private val COLUMN_ID: String = "RecipeID"
 private val COLUMN_IMAGE: String = "RecipeImage"
@@ -29,6 +29,8 @@ class MyDatabase (context: Context?) :
         com.example.myrecipebook.DATABASE_VERSION
     ) {
     override fun onCreate(db: SQLiteDatabase?) {
+
+        // creates the Recipe table
         val sqlQuery =
             "CREATE TABLE ${com.example.myrecipebook.TABLE_NAME}(${com.example.myrecipebook.COLUMN_ID} INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_IMAGE TEXT, $COLUMN_TITLE TEXT, $COLUMN_INGREDIENTS TEXT, $COLUMN_COOKTIME INTEGER, $COLUMN_CATEGORY TEXT, $COLUMN_DESCRIPTION TEXT, $COLUMN_FAVORITE INTEGER DEFAULT 0)"
 
@@ -47,6 +49,11 @@ class MyDatabase (context: Context?) :
         TODO("Not yet implemented")
     }
 
+    // Create
+    // takes an argument with the data of the recipe and adds it to the database(or columns)
+    // writableDatabase opens DB in write mode
+    // I didnt put the ID because the database does it automatically (thats why we had the auto increment too)
+
     fun addToDb(recipe: MyRecipe) {
         val values = ContentValues()
         values.put(COLUMN_IMAGE, recipe.RecipeImage)
@@ -62,6 +69,9 @@ class MyDatabase (context: Context?) :
 
     }
 
+    // Returns the number of rows in the database
+    // if the database is empty it will create our default recipes
+
     fun getCount() : Int {
         val query = "SELECT  * FROM ${com.example.myrecipebook.TABLE_NAME}"
         val db = readableDatabase
@@ -71,13 +81,14 @@ class MyDatabase (context: Context?) :
         return count
     }
 
+    // default recipes that are made when database is empty
+
     fun createDefaults() {
 
         if(getCount() == 0) {
 
             val recipeSchnizel = MyRecipe(0, "https://thefoodbarrel.com/cdn/shop/files/Chicken_Schnitzel_90a8889c-5a06-487d-aa3b-28aa668e8a48.jpg?v=1720608284&width=1500", "Schnitzel", "chicken, rice, veggies", 60, "Chicken", "mix chicken with things")
             val recipeWok = MyRecipe(1, "https://www.wellplated.com/wp-content/uploads/2019/07/Ginger-Teriyaki-Chicken-Stir-Fry.jpg", "Wok Chicken", "chicken, rice, veggies, sauce", 120, "Asian", "Asian chicken rice food...")
-
 
             addToDb(recipeSchnizel)
             addToDb(recipeWok)
@@ -86,6 +97,9 @@ class MyDatabase (context: Context?) :
     }
 
     // Read
+    // Returns the recipes in the database
+    // the cursor goes through every data in the SQL file
+    // moveToFirst() checks if data exists
 
     fun getAll():List<MyRecipe> {
         val list: MutableList<MyRecipe> = mutableListOf()
@@ -126,6 +140,10 @@ class MyDatabase (context: Context?) :
     }
 
     // update
+    // similar to create it takes an argument with the recipe's data and updates the columns
+    // in the database with the said data
+    // for favorites the 1 and 0 stand for true and false
+
     fun editDB(recipe: MyRecipe) {
         val db = writableDatabase
         val values = ContentValues()
@@ -145,7 +163,7 @@ class MyDatabase (context: Context?) :
         )
     }
 
-    // this is for the favorites
+    // updates the favorite status
     fun updateFavorite(recipeId: Int, isFavorite: Boolean) {
         val values = ContentValues()
         values.put(COLUMN_FAVORITE, if (isFavorite) 1 else 0)
@@ -157,6 +175,10 @@ class MyDatabase (context: Context?) :
             arrayOf(recipeId.toString())
         )
     }
+
+    // creates a list of only the favorited recipes
+    // again the cursor goes through every data in the SQLite file
+    // but only where the favorite column is 1 or true
 
     fun getFavorites(): List<MyRecipe> {
         val list = mutableListOf<MyRecipe>()
@@ -183,8 +205,10 @@ class MyDatabase (context: Context?) :
         return list
     }
 
-    // for searching
-
+    // For searching
+    // this one takes an argument as a string and creates a list of the recipes again
+    // the query only searches for similar strings(with the help of LIKE)
+    // There is an array of the three querries because the user can search by category, title or ingredients
     fun searchRecipes(query: String): List<MyRecipe> {
         val recipes = mutableListOf<MyRecipe>()
         val db = readableDatabase

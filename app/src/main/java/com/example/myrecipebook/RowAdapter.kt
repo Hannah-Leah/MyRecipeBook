@@ -12,12 +12,17 @@ import android.widget.ImageView
 import android.widget.TextView
 import java.io.File
 
-//  using glide for the picture urls to show up
+//  using glide for the image urls to actually show up as images
 import com.bumptech.glide.Glide
 
 class RowAdapter (
     context: Context,
+
+    // creates a list of the recipes
+
     private val recipes: List<MyRecipe>,
+
+    // here i am making an adapter to change how my list looks like.
 
 ) : ArrayAdapter<MyRecipe>(context, 0, recipes) {
 
@@ -27,12 +32,12 @@ class RowAdapter (
 
         val imageview = view.findViewById<ImageView>(R.id.imageview)
         val textviewRecipe = view.findViewById<TextView>(R.id.textviewRecipe)
-        // val buttonFavorite = view.findViewById<Button>(R.id.buttonFavorite)
 
+        // the position tag basically gets the ID for that recipe
 
         val recipe = recipes[position]
 
-        // replace the textview with our data
+        // replaces the text view element with the title of the recipe
 
         textviewRecipe.text = recipe.RecipeTitle
 
@@ -43,6 +48,8 @@ class RowAdapter (
         imageview.setImageBitmap(myBitmap)
 
          */
+
+        // takes th URL path from the recipe and loads the URL into the image view
 
         Glide.with(context)
             .load(recipe.RecipeImage)

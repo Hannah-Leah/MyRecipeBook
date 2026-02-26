@@ -20,6 +20,9 @@ class AddEditRecipe : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        // taking our elements
+
         val myTitle = findViewById<EditText>(R.id.ourTitle)
         val myImage = findViewById<EditText>(R.id.ourImage)
         val myIngredients = findViewById<EditText>(R.id.ourIngredients)
@@ -36,7 +39,7 @@ class AddEditRecipe : AppCompatActivity() {
         val editMode = intent.getBooleanExtra("editMode", false)
         val recipeID = intent.getIntExtra("RecipeID", -1)
 
-        // after the data is captured, replace the current elements with the data of that item
+        // if edit mode is true, replace the current elements with the data of that item
 
         if (editMode) {
             myTitle.setText(intent.getStringExtra("RecipeTitle"))
@@ -52,17 +55,22 @@ class AddEditRecipe : AppCompatActivity() {
             mySaveButton.text = "Update"
         }
 
+        // onclick event for the save button
+
+
         mySaveButton.setOnClickListener {
 
-            // simple error handling
+            // simple error handling to make sure the fields are not empty
             if (myTitle.text.isEmpty() || myImage.text.isEmpty() || myDescripton.text.isEmpty() || myCategory.text.isEmpty() || myIngredients.text.isEmpty() || myCookingTime.text.isEmpty()) {
                 Toast.makeText(this, "Please fill all required fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
+            // passes the elements data to that of the database
+
             val intent = Intent()
             intent.putExtra("editMode", editMode)
-            intent.putExtra("RecipeID", recipeID)  // this must be > 0 for edits
+            intent.putExtra("RecipeID", recipeID)
             intent.putExtra("RecipeImage", myImage.text.toString())
             intent.putExtra("RecipeTitle", myTitle.text.toString())
             intent.putExtra("RecipeIngredients", myIngredients.text.toString())
@@ -74,6 +82,8 @@ class AddEditRecipe : AppCompatActivity() {
 
 
         }
+
+        // closes the view
 
         myCancelButton.setOnClickListener {
             finish()

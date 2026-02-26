@@ -67,18 +67,20 @@
         android:id="@+id/ourSaveButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:backgroundTint="?attr/colorTertiaryFixedDim"
         android:text="Save"
-        app:layout_constraintTop_toBottomOf="@id/ourDescription"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/ourDescription" />
 
     <Button
         android:id="@+id/ourCancelButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:backgroundTint="?attr/colorTertiaryFixedDim"
         android:text="Cancel"
-        app:layout_constraintTop_toBottomOf="@id/ourSaveButton"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/ourSaveButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

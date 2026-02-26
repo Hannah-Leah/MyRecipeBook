@@ -17,6 +17,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
 
+    // catching our elements
+
     private lateinit var db: MyDatabase
     private lateinit var recipeList: ListView
     private lateinit var addButton: FloatingActionButton
@@ -24,6 +26,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appTitle : TextView
 
     private lateinit var searchField: EditText
+
+    // if true, it will show a list of the favorites
 
     private var showingFavorites = false
 
@@ -41,6 +45,8 @@ class MainActivity : AppCompatActivity() {
         favoritesButton = findViewById(R.id.favoritesButton)
         appTitle = findViewById(R.id.appTitle)
         searchField = findViewById(R.id.searchField)
+
+        // catching database and creating default recipes
 
         db = MyDatabase(this)
         db.createDefaults()
@@ -64,8 +70,6 @@ class MainActivity : AppCompatActivity() {
             val myIntent = Intent(this, AddEditRecipe::class.java)
             startActivityForResult(myIntent, 1)
         }
-
-        // search f
 
         searchField.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -206,6 +210,8 @@ class MainActivity : AppCompatActivity() {
 //        }
 //    }
 
+    // Loading
+
     private fun loadData() {
         val recipes = if (showingFavorites) {
             appTitle.text = "Favorite Recipes"
@@ -215,8 +221,12 @@ class MainActivity : AppCompatActivity() {
             db.getAll()
         }
 
+        // using a custom adapter to make my list look nice :D
+
         val adapter = RowAdapter(this, recipes)
         recipeList.adapter = adapter
+
+        // clicking on a recipe will pass the recipe's data to the details page with the help of intents
 
         recipeList.setOnItemClickListener { _, _, position, _ ->
             val selectedRecipe = recipes[position]
@@ -232,13 +242,15 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(intent, 1)
         }
 
-        //  for deleting
+        //  gives the recipe ID to the next function
         recipeList.setOnItemLongClickListener { _, _, position, _ ->
             val selectedRecipe = recipes[position]
             showDeleteDialog(selectedRecipe.RecipeID)
             true
         }
     }
+
+    // deletes recipe from database
 
     private fun showDeleteDialog(recipeId: Int) {
         AlertDialog.Builder(this)
