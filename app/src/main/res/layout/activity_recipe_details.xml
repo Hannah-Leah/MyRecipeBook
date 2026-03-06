@@ -77,8 +77,14 @@
         android:text="TextView"
         android:textAlignment="viewStart"
         android:textSize="24sp"
+        android:padding="8dp"
+
+        android:scrollbars="vertical"
+        android:overScrollMode="always"
+
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textviewCookingTime" />
+        app:layout_constraintTop_toBottomOf="@+id/textviewCookingTime"
+        />
 
     <ImageView
         android:id="@+id/imageviewRecipe"

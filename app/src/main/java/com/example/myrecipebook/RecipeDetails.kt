@@ -13,6 +13,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import java.io.File
 import com.bumptech.glide.Glide
+import android.text.method.ScrollingMovementMethod
 
 
 class RecipeDetails : AppCompatActivity() {
@@ -52,6 +53,10 @@ class RecipeDetails : AppCompatActivity() {
 
         val editButton = findViewById<Button>(R.id.editButton)
         val returnButton = findViewById<Button>(R.id.returnButton)
+
+        // make the description textview scrollable
+
+        textviewDescription.movementMethod = ScrollingMovementMethod()
 
         // replace the elements with the data of the recipe that was clicked on
         recipeID = intent.getIntExtra("RecipeID", -1)
